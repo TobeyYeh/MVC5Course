@@ -8,16 +8,17 @@ using System.Net;
 
 namespace MVC5Course.Controllers
 {
-    public class TestController : Controller
+    public class TestController : BaseController
     {
         FabricsEntities db = new FabricsEntities();
+
         // GET: Test
-        public ActionResult Index()
-        {
-            var data = from p in db.Product
-                       select p;
-            return View(data.Take(10));
-        }
+        //public ActionResult Index()
+        //{
+        //    var data = from p in db.Product
+        //               select p;
+        //    return View(data.Take(10));
+        //}
         public ActionResult Create()
         {
             return View();
@@ -54,7 +55,10 @@ namespace MVC5Course.Controllers
                 item.Price = data.Price;
                 item.Stock = data.Stock;
 
-                db.SaveChanges();
+                repo.UnitOfWork.Commit();
+
+                TempData["ProductItem"] = item;
+
 
                 return RedirectToAction("Index");
             }
@@ -87,6 +91,22 @@ namespace MVC5Course.Controllers
         //    db.SaveChanges();
         //    return RedirectToAction("Index");
 
+        //public ActionResult Index()
+        //{
+        //    var data = from p in db.Product
+        //               where p.IsDeleted == false
+        //               select p;
+        //    return View(data.Take(10));
+        //}
+
+        public ActionResult Index()
+        {
+            var data = repo.All().Where(p => p.IsDeleted == false);
+            //var data = repo.Get取得所有尚未刪除的商品資料Top10();
+
+            return View(data.Take(10));
+            //return View(data);
+        }
 
 
         //取得post資料，在做刪除
@@ -102,11 +122,31 @@ namespace MVC5Course.Controllers
         }
 
 
-
         public ActionResult Details(int? id)
         {
             var product = db.Product.Find(id);
             return View(product);
         }
+
+
+        public ActionResult Delete(int id)
+        {
+            //being 只做一次交易
+            var olRepo = RepositoryHelper.GetOrderLineRepository(repo.UnitOfWork);
+            olRepo.Delete(olRepo.All().First(p => p.OrderId == 1));
+
+            //var olRepo = new OrderLineRepository();
+            //olRepo.UnitOfWork = repo.UnitOfWork;
+            //olRepo.Delete(olRepo.All().First(p => p.OrderId == 1));
+
+            var item = repo.Find(id);
+            repo.Delete(item);
+
+            repo.UnitOfWork.Commit();
+
+            return RedirectToAction("Index");
+        }
+
     }
 }
+
