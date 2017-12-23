@@ -1,0 +1,26 @@
+﻿@{
+    var items = new int[] { 1, 2, 3, 4, 5 };
+
+}
+
+@foreach (var item in items)
+{
+    @item;
+}
+
+
+@foreach (var item in items)
+{
+    @(item + " ") ;
+}
+
+@{
+    var itemI = items.ToArray();
+}
+<ul>
+    <li>@itemI[0]</li>
+    <li>@itemI[1]</li>
+    <li>@itemI[2]</li>
+    <li>@itemI[3]</li>
+    <li>@itemI[4]</li>
+</ul>

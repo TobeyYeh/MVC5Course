@@ -60,14 +60,14 @@ namespace MVC5Course.Controllers
             
         }
 
-        public ActionResult RedirecTest2()
-        {
-            //return RedirectToAction(new { 
-            //Controller = "Home",
-            //action = "About",
-            //id = 123
-            //    });
+        //public ActionResult RedirecTest2()
+        //{
+        //    //return RedirectToAction(new { 
+        //    //Controller = "Home",
+        //    //action = "About",
+        //    //id = 123
+        //    //    });
             
-        }
+        //}
     }
 }
